@@ -64,6 +64,8 @@ import (
 	superfluid "github.com/osmosis-labs/osmosis/v7/x/superfluid"
 	superfluidclient "github.com/osmosis-labs/osmosis/v7/x/superfluid/client"
 	superfluidtypes "github.com/osmosis-labs/osmosis/v7/x/superfluid/types"
+	"github.com/osmosis-labs/osmosis/v7/x/tokenfactory"
+	tokenfactorytypes "github.com/osmosis-labs/osmosis/v7/x/tokenfactory/types"
 	"github.com/osmosis-labs/osmosis/v7/x/txfees"
 	txfeestypes "github.com/osmosis-labs/osmosis/v7/x/txfees/types"
 )
@@ -109,6 +111,7 @@ var appModuleBasics = []module.AppModuleBasic{
 	superfluid.AppModuleBasic{},
 	bech32ibc.AppModuleBasic{},
 	wasm.AppModuleBasic{},
+	tokenfactory.AppModuleBasic{},
 }
 
 // moduleAccountPermissions defines module account permissions
@@ -129,6 +132,7 @@ var moduleAccountPermissions = map[string][]string{
 	txfeestypes.ModuleName:                   nil,
 	txfeestypes.NonNativeFeeCollectorName:    nil,
 	wasm.ModuleName:                          {authtypes.Burner},
+	tokenfactorytypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
 }
 
 // appModules return modules to initialize module manager.
@@ -322,6 +326,7 @@ func simulationModules(
 			app.GAMMKeeper,
 			app.EpochsKeeper,
 		),
+		tokenfactory.NewAppModule(appCodec, *app.TokenFactoryKeeper),
 		app.TransferModule,
 	}
 }
